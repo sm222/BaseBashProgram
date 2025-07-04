@@ -1,11 +1,14 @@
-#!/bin/bash
+#!/bin/sh
 
 name='base'
 
 files=$(ls src/*.c)
 
 
-compileLine="cc -Wall -Werror -Wextra $files -o $name"
+safety=" -D NAME_CHECK "
+rule=" -g -D PROG_NAME=\"$name\" $safety "
+
+compileLine="cc $rule -Wall -Werror -Wextra  $files  -o $name"
 
 #
 
