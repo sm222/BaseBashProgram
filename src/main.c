@@ -3,7 +3,7 @@
 #include "utilse.h"
 #include "parsing.h"
 
-bool test_name(const char* name) {
+static bool test_name(const char* name) {
   # if (SYSTYPE == SYS_LINUX) || (SYSTYPE == SYS_MAC)
     const char sep = '/';
   # endif
@@ -22,47 +22,36 @@ bool test_name(const char* name) {
     return false;
   }
   if (strcmp(cut + 1, PROG_NAME) != 0) {
-    write(2, "error: program was rename!\n", 27);
+    put_str_nl("error: program was rename!", STDERR_FILENO);
     return false;
   }
   return true;
 }
 
 
-int base(t_mainData data, int fdIn, int fdOut) {
+static int base(t_mainData data, int fdIn, int fdOut) {
   int status = EX_OK;
-  t_setting programSetting;
-  //
-  bzero(&programSetting, sizeof(programSetting));
-  programSetting.stdIn = fdIn;
-  programSetting.stdOut = fdOut;
-  programSetting.programeName = data.av[0];
-  programSetting.stopOnError = 1; //defalut
-  programSetting.ac = data.ac;
-  programSetting.av = data.av;
+  t_setting programSetting = {
+    fdIn,       //*
+    fdOut,      //
+    data.ac,    //
+    data.av,    //
+    data.av[0], // program name
+    true,       // stop on error
+    false,      // color
+    data.env    //*
+  };
   //
   # ifdef NAME_CHECK
-  if (!test_name(data.av[0]))
-    return 1;
+    if (!test_name(data.av[0]))
+      return 1;
   # endif
-  //const size_t envLen  = getArrayLen(data.env);
-  // skip program name
-  int* i = &programSetting.currentArg;
-  for (*i = 1; *i  < data.ac; (*i)++) {
-    const size_t lineSize = strlen(data.av[*i]);
-    if (strncmp(data.av[*i], "--", 2) == 0 )                             // verbose
-      status = setVerboseFlag(data.av[*i] + 2, &programSetting);
-    else if (strncmp(data.av[*i], "-", 1) == 0 && data.av[*i][1] != '\0') // flags like -xyz
-      status = setFlag(data.av[*i], lineSize, &programSetting);
-    else {
-      printf("arg ->%s\n", data.av[*i]); // normal args // replace for your code
-    }
-    if (programSetting.help) {
-      help(programSetting.helpFlag);
-    }
+  env_parsing(&programSetting);
+  for (int i = 1; i < programSetting.ac; i++) {
     if (programSetting.stopOnError && status)
-      break ;
+      break;
   }
+  // programe here
   return status;
 }
 

@@ -18,6 +18,17 @@ int  int_strlen(const char* s) {
   return i;
 }
 
+void put_str(const char* str, int fd, bool nl) {
+  write(fd, str, strlen(str));
+  if (nl)
+    write(fd, "\n", 1);
+}
+
+void put_str_nl(const char* str, int fd) {
+  put_str(str, fd, true);
+}
+
+
 void  help(int i[2]) {
   if (i[0] != 0) {
     if (i[0] == 1) {
