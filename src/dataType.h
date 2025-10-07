@@ -61,6 +61,7 @@ typedef struct setting {
   const int          ac;
   const char* const* av;
   const char*        programeName;
+  int32_t            flags;
   bool               stopOnError;
   bool               color; //COLORTERM=truecolor
   const char* const* env;
