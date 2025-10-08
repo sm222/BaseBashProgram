@@ -50,25 +50,3 @@ void showbits(int32_t var) {
   printf("%s\n", s);
 }
 
-void  help(int i[2]) {
-  if (i[0] != 0) {
-    if (i[0] == 1) {
-      fprintf(stderr, "%s\n", singleFlags[i[1]]);
-    }
-    if (i[0] == 2) {
-      fprintf(stderr, "%s\n", verboseFlags[i[1]]);
-    }
-    return ;
-  }
-  fprintf(stderr, "\n");
-  size_t single = getArrayLen(singleFlags);
-  for (size_t i = 0; i < single; i++) {
-    fprintf(stderr, "%s\n", singleFlags[i]);
-  }
-  for (int i = 0; i < 2; i++) { fprintf(stderr, "\n"); }
-  size_t Verbose = getArrayLen(verboseFlags);
-  for (size_t i = 0; i < Verbose; i++) {
-    fprintf(stderr, "%s\n", verboseFlags[i]);
-  }
-  fprintf(stderr, "\n");
-}
