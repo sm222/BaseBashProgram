@@ -48,6 +48,14 @@
 # endif
 
 
+
+enum {
+  setting_color = 1,
+  setting_continue_on_error = 2,
+  setting_1 = 4, // add setting later
+  setting_2 = 8, // add setting later
+};
+
 typedef struct mainData {
   const int          ac;
   const char* const* av;
@@ -62,8 +70,6 @@ typedef struct setting {
   const char* const* av;
   const char*        programeName;
   int32_t            flags;
-  bool               stopOnError;
-  bool               color; //COLORTERM=truecolor
   const char* const* env;
 } t_setting;
 

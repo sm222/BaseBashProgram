@@ -28,6 +28,27 @@ void put_str_nl(const char* str, int fd) {
   put_str(str, fd, true);
 }
 
+void set_byte(int32_t* flag, int32_t val, bool status) {
+  if (!flag)
+    return ;
+  status ? (*flag |= val) : (*flag ^= val);
+}
+
+void showbits(int32_t var) {
+  int index = 32 + 4;
+  char s[index + 1];
+  s[index] = 0;
+  for (int j = 0; j < 4; j++) {
+    index--;
+    s[index] = '|';
+    for (int i = 0; i < 8; i++) {
+      index--;
+      s[index] = (var & 1) + '0';
+      var >>= 1;
+    }
+  }
+  printf("%s\n", s);
+}
 
 void  help(int i[2]) {
   if (i[0] != 0) {

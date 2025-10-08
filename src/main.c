@@ -3,21 +3,10 @@
 #include "utilse.h"
 #include "parsing.h"
 
-
 /*
 #include <sys/types.h>
 #include <limits.h>
 #include <stdio.h>
-
-void showbits( unsigned int x ) {
-  int i = 0;
-  int w = 0;
-  for (i = (sizeof(int) * 8) - 1; i >= 0; i--) {
-    putchar(x & (1u << i) ? '1' : '0');
-    w++;
-  }
-  printf("\n%d\n", w);
-}
 
 int main(void) {
   int32_t a = -9;
@@ -39,8 +28,10 @@ int main(void) {
   printf("\n");
 }
 
-*/
 
+
+*/
+# ifdef NAME_CHECK
 static bool test_name(const char* name) {
   # if (SYSTYPE == SYS_LINUX) || (SYSTYPE == SYS_MAC)
     const char sep = '/';
@@ -65,6 +56,7 @@ static bool test_name(const char* name) {
   }
   return true;
 }
+# endif
 
 
 static int base(t_mainData data, int fdIn, int fdOut) {
@@ -75,18 +67,22 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     data.ac,    //
     data.av,    //
     data.av[0], // program name
-    true,       // stop on error
-    false,      // color
+    0,          // flag
     data.env    //*
   };
   //
+  set_byte(&programSetting.flags, setting_1, true);
+  set_byte(&programSetting.flags, setting_2, true);
+  showbits(programSetting.flags);
+  set_byte(&programSetting.flags, setting_2, false);
+  //showbits(programSetting.flags);
   # ifdef NAME_CHECK
-    if (!test_name(data.av[0]))
-      return 1;
+  if (!test_name(data.av[0]))
+    return 1;
   # endif
   env_parsing(&programSetting);
   for (int i = 1; i < programSetting.ac; i++) {
-    if (programSetting.stopOnError && status)
+    if (/*programSetting*/ 1 && status)
       break;
   }
   // programe here
