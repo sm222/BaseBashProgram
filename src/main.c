@@ -71,11 +71,13 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     data.env    //*
   };
   //
-  set_byte(&programSetting.flags, setting_1, true);
+  set_byte(&programSetting.flags, setting_color, true);
+  set_byte(&programSetting.flags, setting_4, true);
   set_byte(&programSetting.flags, setting_2, true);
+  set_byte(&programSetting.flags, setting_1, true);
   showbits(programSetting.flags);
   set_byte(&programSetting.flags, setting_2, false);
-  //showbits(programSetting.flags);
+  showbits(programSetting.flags);
   # ifdef NAME_CHECK
   if (!test_name(data.av[0]))
     return 1;

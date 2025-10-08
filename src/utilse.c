@@ -34,19 +34,23 @@ void set_byte(int32_t* flag, int32_t val, bool status) {
   status ? (*flag |= val) : (*flag ^= val);
 }
 
+bool read_byte(int32_t flag, int32_t value) {
+  return flag & value;
+}
+
 void showbits(int32_t var) {
-  int index = 32 + 4;
+  int index = 32;
   char s[index + 1];
   s[index] = 0;
-  for (int j = 0; j < 4; j++) {
+  for (int i = 1; index > 0; i <<= 1) {
     index--;
-    s[index] = '|';
-    for (int i = 0; i < 8; i++) {
-      index--;
-      s[index] = (var & 1) + '0';
-      var >>= 1;
-    }
+    s[index] = read_byte(var, i) + '0';
   }
   printf("%s\n", s);
 }
 
+/*
+  00000000000000000000000000001001| good
+  11111111111111111111111111100000|
+  00000000000000000000000000000000|
+*/
