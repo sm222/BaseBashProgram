@@ -69,6 +69,7 @@ typedef struct setting {
   const int          stdIn;
   const int          stdOut;
   const int          ac;
+  int                current;
   const char* const* av;
   const char*        programeName;
   int32_t            flags;
