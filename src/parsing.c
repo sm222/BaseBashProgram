@@ -24,8 +24,11 @@ static int set_single_value(t_setting* setting, int c) {
   if (c == 'c') {
     set_byte(&setting->flags, setting_color, true);
   }
+  else if (c == 'h') {
+    put_str_error(setting, RED, "todo: print help\n");
+  }
   else {
-    // unknow flag
+    put_str_error(setting, RED, "%c: is unknow flag, call -h or --help to see the option\n", c);
     return 1;
   }
   return 0;
@@ -34,8 +37,8 @@ static int set_single_value(t_setting* setting, int c) {
 int parsing_get_single(t_setting* setting) {
   if (setting->current > setting->ac)
     return -1;
-  if (setting->av[setting->current][0] != '-' && setting->av[setting->current][1]) {
-    // error just -
+  if (setting->av[setting->current][0] == '-' && !setting->av[setting->current][1]) {
+    put_str_error(setting, RED, "flag was call with not params\n");
     return 2;
   }
   const size_t len = strlen(setting->av[setting->current]);

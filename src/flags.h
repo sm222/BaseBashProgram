@@ -1,24 +1,17 @@
 #ifndef __FLAGS__
 # define __FLAGS__
 
-//  flags like -xyz
-
-//  single
-/*
-format
--a             -    what it dose
-^^ flag
-| one dash
-*/
-
-# define DEVFLAG 1 // use only to work on base
-
 enum valueArg {
   e_bool,
   e_next,
   e_equal,
 };
 
+typedef struct s_flagValue {
+  struct s_flagValue* next;
+  int                 flag;
+  char*               value;
+} t_flagValue;
 
 
 #endif

@@ -78,8 +78,9 @@ static int base(t_mainData data, int fdIn, int fdOut) {
   # endif
   env_parsing(&programSetting);
   for (; programSetting.current < programSetting.ac; programSetting.current++) {
-    if (programSetting.av[programSetting.current][0] == '-')
+    if (programSetting.av[programSetting.current][0] == '-') {
       status = parsing_get_single(&programSetting);
+    }
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
     put_str_error(&programSetting, RED, "code %d\n", status);
