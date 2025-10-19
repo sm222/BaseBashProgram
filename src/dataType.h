@@ -65,6 +65,7 @@ typedef struct mainData {
   //
 } t_mainData;
 
+# include "flags.h"
 typedef struct setting {
   const int          stdIn;
   const int          stdOut;
@@ -74,6 +75,7 @@ typedef struct setting {
   const char*        programeName;
   int32_t            flags;
   const char* const* env;
+  t_flagValue*       flagValue;
 } t_setting;
 
 

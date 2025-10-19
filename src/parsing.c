@@ -50,3 +50,18 @@ int parsing_get_single(t_setting* setting) {
   }
   return error;
 }
+
+
+
+
+
+int parsing_get_double(t_setting *setting) {
+  if (setting->current > setting->ac)
+    return -1;
+  if (setting->av[setting->current][1] == '-' && !setting->av[setting->current][2]) {
+    put_str_error(setting, RED, "flag was call with not params\n");
+    return 2;
+  }
+  int error = 0;
+  return error;
+}

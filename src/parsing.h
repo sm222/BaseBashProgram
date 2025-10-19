@@ -10,8 +10,8 @@
 
 
 int env_parsing(t_setting* setting);
-
-
+//
 int parsing_get_single(t_setting* setting);
+int parsing_get_double(t_setting* setting);
 
 #endif

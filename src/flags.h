@@ -14,4 +14,9 @@ typedef struct s_flagValue {
 } t_flagValue;
 
 
+int          fv_add_last(t_flagValue** list, int flag, const char* value);
+int          fv_free(t_flagValue** list);
+void         fv_print(t_flagValue* list);
+
+
 #endif

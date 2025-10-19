@@ -2,35 +2,9 @@
 #include "dataType.h"
 #include "utilse.h"
 #include "parsing.h"
-
-/*
-#include <sys/types.h>
-#include <limits.h>
-#include <stdio.h>
-
-int main(void) {
-  int32_t a = -9;
-  int i = 0;
-  int j = 5225;
-  printf("%d in binary \t\t ", j);
-  showbits(j);
-    //-the loop for right shift operation
-    for (int m = 0; m <= 5; m++) {
-      int n = j >> m;
-      printf("%d right shift %d gives ", j, m);
-      showbits(n);
-    }
-  //for (; i < 32; i++) {
-  //  printf("%d", a ^ 1);
-  //  a >>= 1;
-  //}
-  showbits(a);
-  printf("\n");
-}
+#include "flags.h"
 
 
-
-*/
 # ifdef NAME_CHECK
 static bool test_name(const char* name) {
   # if (SYSTYPE == SYS_LINUX) || (SYSTYPE == SYS_MAC)
@@ -62,14 +36,15 @@ static bool test_name(const char* name) {
 static int base(t_mainData data, int fdIn, int fdOut) {
   int status = EX_OK;
   t_setting programSetting = {
-    fdIn,       //*
-    fdOut,      //
-    data.ac,    //
-    1,          // skip programe name
-    data.av,    //
-    data.av[0], // program name
-    0,          // flag
-    data.env    //*
+    .stdIn        = fdIn,        //*
+    .stdOut       = fdOut,       //
+    .ac           = data.ac,     //
+    .current      = 1,           // skip programe name
+    .av           = data.av,     //
+    .programeName = data.av[0],  // program name
+    .flags        = 0,           // flag
+    .env          = data.env,    //
+    .flagValue    = NULL         //*
   };
   //
   # ifdef NAME_CHECK
@@ -78,11 +53,15 @@ static int base(t_mainData data, int fdIn, int fdOut) {
   # endif
   env_parsing(&programSetting);
   for (; programSetting.current < programSetting.ac; programSetting.current++) {
-    if (programSetting.av[programSetting.current][0] == '-') {
+    if (strncmp(programSetting.av[programSetting.current], "--", 2) == 0) {
+      status = parsing_get_double(&programSetting);
+    }
+    else if (programSetting.av[programSetting.current][0] == '-') {
       status = parsing_get_single(&programSetting);
     }
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
+    // programe here
     put_str_error(&programSetting, RED, "code %d\n", status);
   }
   // programe here

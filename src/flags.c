@@ -2,7 +2,7 @@
 # include <string.h>
 # include <stdlib.h>
 
-t_flagValue* fv_add(int flag, const char* value) {
+static t_flagValue* fv_add(int flag, const char* value) {
   t_flagValue* f = calloc(1, sizeof(*f));
   if (f) {
     f->flag = flag;
@@ -43,4 +43,11 @@ int fv_free(t_flagValue** list) {
     tmp = t;
   }
   return 0;
+}
+
+# include <stdio.h>
+void fv_print(t_flagValue* list) {
+  for ( ; list; list = list->next) {
+    printf("[%d]%s\n", list->flag, list->value);
+  }
 }
