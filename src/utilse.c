@@ -1,5 +1,5 @@
 # include "dataType.h"
-#include "flags.h"
+
 
 
 size_t getArrayLen(const char* const* array) {
@@ -55,6 +55,7 @@ void showbits(int32_t var) {
 }
 
 #include <stdarg.h>
+#include "utilse.h"
 
 void put_str_error(t_setting* setting, const char* color, const char* str, ...) {
   if (read_byte(setting->flags, setting_color)) {
@@ -64,6 +65,8 @@ void put_str_error(t_setting* setting, const char* color, const char* str, ...) 
   }
   va_list list;
   va_start(list, str);
-  vdprintf(STDERR_FILENO, str, list);
+  char s[STR_BUFF_LEN + 1];
+  vsnprintf(s, STR_BUFF_LEN, str, list);
   va_end(list);
+  put_str(s, STDERR_FILENO, true);
 }

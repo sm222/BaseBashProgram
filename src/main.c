@@ -62,7 +62,7 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
     // programe here
-    put_str_error(&programSetting, RED, "code %d\n", status);
+    put_str_error(&programSetting, RED, "code %d", status);
   }
   // programe here
   return status;

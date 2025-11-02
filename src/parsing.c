@@ -52,8 +52,40 @@ int parsing_get_single(t_setting* setting) {
 }
 
 
+const char* const doubleFlags[] = {
+  "COLOR",
+  "TEXT=",
+  "TT>",
+  0x0
+};
+
+/*
+static size_t get_end_str(const char*s , char* l) {
+  size_t len = 0;
+  for (; s[len]; len++) {
+    size_t f = 0;
+    while (l[f]) {
+      if (l[f] == s[len])
+        return len;
+      f++;
+    }
+  }
+  return len;
+}
+*/
 
 
+static int set_double_value(t_setting *setting) {
+  const char* s = setting->av[setting->current] + 2;
+  printf("> %s\n", s);
+  size_t len = 0;
+  const char* w = doubleFlags[2];
+  while (w[len] && (w[len] != 0 && w[len] != '>' && w[len] != '=')) {
+    len++;
+  }
+  printf("%.*s\n", (int)len, w);
+  return 0;
+}
 
 int parsing_get_double(t_setting *setting) {
   if (setting->current > setting->ac)
@@ -62,6 +94,5 @@ int parsing_get_double(t_setting *setting) {
     put_str_error(setting, RED, "flag was call with not params\n");
     return 2;
   }
-  int error = 0;
-  return error;
+  return set_double_value(setting);
 }

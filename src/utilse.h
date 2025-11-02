@@ -3,6 +3,10 @@
 
 # include "dataType.h"
 
+# ifndef  STR_BUFF_LEN
+#  define STR_BUFF_LEN 300
+# endif
+
 size_t getArrayLen(const char* const* array);
 void   help(int i[2]);
 

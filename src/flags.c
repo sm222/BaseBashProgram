@@ -1,12 +1,23 @@
 # include "flags.h"
-# include <string.h>
 # include <stdlib.h>
+# include <string.h>
+
+static char* __strdup(const char* s) {
+  if (!s)
+    return NULL;
+  size_t i = strlen(s);
+  char *str = calloc(i + 1, sizeof(*str));
+  if (!str)
+    return NULL;
+  memmove(str, s, i + 1);
+  return str;
+}
 
 static t_flagValue* fv_add(int flag, const char* value) {
   t_flagValue* f = calloc(1, sizeof(*f));
   if (f) {
     f->flag = flag;
-    f->value = strdup(value);
+    f->value = __strdup(value);
     if (!f->value) {
       free(f);
       f = NULL;
