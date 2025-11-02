@@ -1,15 +1,21 @@
 #!/bin/env bash
 
+
+# setup
 name='base'
 
 files=$(ls src/*.c)
 
+
+# cc setup
 safety=" -D NAME_CHECK "
 
-rule=" --std=c99 -g -D PROG_NAME=\"$name\" $safety "
-compileLine="cc $rule -Wall -Werror -Wextra  $files  -o $name"
+ccVar="--std=c99 -g -Wall -Werror -Wextra "
 
-#
+rule=" $ccVar -D PROG_NAME=\"$name\" $safety "
+compileLine="cc $rule  $files  -o $name"
+
+# projet version
 version="1.0.0"
 #
 
@@ -20,27 +26,42 @@ str1=${av:0:1}
 
 length=${#av}
 
+i=1
+
 if [[ "$str1" == "-" ]]; then
-  for i in {1..{$length}}; do
-  echo $i
-  str2=${av:$i:$i}
+  while [ $i -lt $length ]
+  do
+  str2=${av:$i:1} # substr of 1
     if [[ "$str2" == "v" ]]; then
       bash --version
+      echo - - -
+      cc --version
       exit 0
-    elif [[ "$str2" == "t" ]]; then
-      echo ttt
+    elif [[ "$str2" == "e" ]]; then
+      cat $0
       exit 0
+    elif [[ "$str2" == "h" ]]; then
+      echo 'Help -'
+      echo ' -v show bash vertion user and cc '
+      echo ' -e print the file using cat '
+      echo ' -h show this message '
+      echo ' -l list the files use by cc '
+      exit 0
+    elif [[ "$str2" == "l" ]]; then
+      echo Files - - -
+      for f in $files; do
+        echo $f
+      done
+      echo - - - - - -
     else
-      echo 'bad args' $str2
+      echo 'unknow ' $str2
       exit 1
     fi
+  ((i++))
   done
 fi
 
-# first_char=${string:0:1}
-
-
-# code
+# run code
 
 echo '|' $compileLine '|'
 
