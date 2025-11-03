@@ -51,8 +51,11 @@ int parsing_get_single(t_setting* setting) {
   return error;
 }
 
+/*
+  double
+*/
 
-bool strncmp_name(const char* s1, const char* s2) {
+static bool strncmp_name(const char* s1, const char* s2) {
   const size_t l = strlen(s2);
   if (strncmp(s1, s2, l) == 0 && (s1[l] == '\0' || s1[l] == '='))
     return 1;
