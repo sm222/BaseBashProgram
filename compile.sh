@@ -54,7 +54,8 @@ if [[ "$str1" == "-" ]]; then
       done
       echo - - - - - -
     else
-      echo 'unknow ' $str2
+      echo 'unknow flag -' $str2
+      echo "try $0 -h"
       exit 1
     fi
   ((i++))
@@ -62,7 +63,6 @@ if [[ "$str1" == "-" ]]; then
 fi
 
 # run code
-
 echo '|' $compileLine '|'
 
 $compileLine

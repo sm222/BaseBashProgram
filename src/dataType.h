@@ -56,6 +56,7 @@ enum {
   setting_2 = 8, // add setting later
   setting_3 = 16,// add setting later
   setting_4 = 32,// add setting later
+  setting_5 = 64,// add setting later
 };
 
 typedef struct mainData {

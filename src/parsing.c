@@ -52,42 +52,34 @@ int parsing_get_single(t_setting* setting) {
 }
 
 
-const char* const doubleFlags[] = {
-  "COLOR",
-  "TEXT=",
-  "TT>",
-  0x0
-};
-
-/*
-static size_t get_end_str(const char*s , char* l) {
-  size_t len = 0;
-  for (; s[len]; len++) {
-    size_t f = 0;
-    while (l[f]) {
-      if (l[f] == s[len])
-        return len;
-      f++;
-    }
-  }
-  return len;
-}
-*/
-
-
-static int set_double_value(t_setting *setting) {
-  const char* s = setting->av[setting->current] + 2;
-  printf("> %s\n", s);
-  size_t len = 0;
-  const char* w = doubleFlags[2];
-  while (w[len] && (w[len] != 0 && w[len] != '>' && w[len] != '=')) {
-    len++;
-  }
-  printf("%.*s\n", (int)len, w);
+bool strncmp_name(const char* s1, const char* s2) {
+  const size_t l = strlen(s2);
+  if (strncmp(s1, s2, l) == 0 && (s1[l] == '\0' || s1[l] == '='))
+    return 1;
   return 0;
 }
 
-int parsing_get_double(t_setting *setting) {
+static int parsing_value_double(t_setting* setting, const char* name, size_t nameLen, const char* value) {
+  if (strncmp_name(name, "color")) {
+    set_byte(&setting->flags, setting_color, true);
+  }
+  (void)value;
+  printf(">>%.*s\n", (int)nameLen, name);
+  printf(">>%s|%zu\n", value, strlen(value));
+  return 0;
+}
+
+
+static int set_double_value(t_setting* setting) {
+  const char* s = setting->av[setting->current] + 2;
+  size_t len = 0;
+  while (s[len] && (s[len] != 0 && s[len] != '=')) {
+    len++;
+  }
+  return parsing_value_double(setting, s, len, s + len);
+}
+
+int parsing_get_double(t_setting* setting) {
   if (setting->current > setting->ac)
     return -1;
   if (setting->av[setting->current][1] == '-' && !setting->av[setting->current][2]) {
