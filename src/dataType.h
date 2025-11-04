@@ -9,7 +9,8 @@
 # include <errno.h>
 # include <stdio.h>
 # include <unistd.h>
-# include <ncurses.h>
+//# include <ncurses.h>
+# include <stdbool.h>
 # include <sys/param.h>
 
 // https://stackoverflow.com/questions/142508/how-do-i-check-os-with-a-preprocessor-directive

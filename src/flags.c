@@ -1,23 +1,16 @@
 # include "flags.h"
-# include <stdlib.h>
+# include "utilse.h"
 # include <string.h>
+# include <strings.h>
+# include <stdlib.h>
 
-static char* __strdup(const char* s) {
-  if (!s)
-    return NULL;
-  size_t i = strlen(s);
-  char *str = calloc(i + 1, sizeof(*str));
-  if (!str)
-    return NULL;
-  memmove(str, s, i + 1);
-  return str;
-}
 
 static t_flagValue* fv_add(int flag, const char* value) {
   t_flagValue* f = calloc(1, sizeof(*f));
   if (f) {
     f->flag = flag;
-    f->value = __strdup(value);
+    bzero(f->name, FLAG_NAME_LEN * sizeof(char));
+    f->value = d__strdup(value);
     if (!f->value) {
       free(f);
       f = NULL;
@@ -53,6 +46,15 @@ int fv_free(t_flagValue** list) {
     free(tmp);
     tmp = t;
   }
+  return 0;
+}
+
+int fv_set_name(t_flagValue* node, const char* name) {
+  if (!node)
+    return 1;
+  const size_t l = strlen(name);
+  memcpy(node->name, name, l > FLAG_NAME_LEN - 1 ? FLAG_NAME_LEN -1 : l);
+  node->name[FLAG_NAME_LEN - 1] = 0;
   return 0;
 }
 

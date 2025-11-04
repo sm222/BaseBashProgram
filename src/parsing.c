@@ -62,11 +62,50 @@ static bool strncmp_name(const char* s1, const char* s2) {
   return 0;
 }
 
+static char* grab_value(t_setting* setting, const char* value, bool type) {
+  char *dest = NULL;
+  if (!type && value[0]) {
+    if (value[1])
+      return NULL;
+    dest = d__strdup(value + 1);
+  } else if (type) {
+    if (setting->current + 1 >= setting->ac) {
+      return NULL;
+    }
+    dest = d__strdup(setting->av[setting->current + 1]);
+  }
+  if (!dest) {
+    perror("grab_value");
+  }
+  return dest;
+}
+
+enum {
+  equal = 0,
+  next  = 1
+};
+
+# include <stdlib.h>
+# include "prossess.h"
+
 static int parsing_value_double(t_setting* setting, const char* name, size_t nameLen, const char* value) {
   if (strncmp_name(name, "color")) {
     set_byte(&setting->flags, setting_color, true);
   }
-  (void)value;
+  else if (strncmp_name(name, "pwd")) {
+    char* const s = grab_value(setting, value, next);
+    if (!s) {
+      put_str_error(setting, RED, "%s: --%s missing value", setting->av[0], name);
+      return 1;
+    }
+    //error = fv_add_last(&setting->flagValue, 0, value);
+  }
+  else if (strncmp_name(name, "help")) {
+    put_str_error(setting, WHT, "%s: todo print help", setting->av[0]);
+  }
+  else {
+    put_str_error(setting, RED, "%s: --%s unknow flag, try --help", setting->av[0], name);
+  }
   printf(">>%.*s\n", (int)nameLen, name);
   printf(">>%s|%zu\n", value, strlen(value));
   return 0;

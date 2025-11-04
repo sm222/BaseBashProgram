@@ -1,6 +1,16 @@
 # include "dataType.h"
+# include <stdlib.h>
 
-
+char* d__strdup(const char* s) {
+  if (!s)
+    return NULL;
+  size_t i = strlen(s);
+  char *str = calloc(i + 1, sizeof(*str));
+  if (!str)
+    return NULL;
+  memmove(str, s, i + 1);
+  return str;
+}
 
 size_t getArrayLen(const char* const* array) {
   size_t i = 0;
