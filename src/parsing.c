@@ -62,17 +62,23 @@ static bool strncmp_name(const char* s1, const char* s2) {
   return 0;
 }
 
-static char* grab_value(t_setting* setting, const char* value, bool type) {
+enum {
+  none = -1,
+  equal = 0,
+  next  = 1
+};
+
+static char* grab_value(t_setting* setting, const char* value, int type) {
   char *dest = NULL;
-  if (!type && value[0]) {
-    if (value[1])
-      return NULL;
-    dest = d__strdup(value + 1);
+  if ((type == equal || type == none) && value[0]) {
+    dest = d__strdup(value);
   } else if (type) {
     if (setting->current + 1 >= setting->ac) {
       return NULL;
     }
     dest = d__strdup(setting->av[setting->current + 1]);
+  } else {
+    return NULL;
   }
   if (!dest) {
     perror("grab_value");
@@ -80,35 +86,35 @@ static char* grab_value(t_setting* setting, const char* value, bool type) {
   return dest;
 }
 
-enum {
-  equal = 0,
-  next  = 1
-};
 
 # include <stdlib.h>
 # include "prossess.h"
 
-static int parsing_value_double(t_setting* setting, const char* name, size_t nameLen, const char* value) {
+static int parsing_value_double(t_setting* setting, const char* name, const char* value) {
+  int(*ft)(t_setting*, const char*) = NULL;
+  int grabValue = none;
+  char* v = NULL;
+  //
+  
   if (strncmp_name(name, "color")) {
     set_byte(&setting->flags, setting_color, true);
   }
-  else if (strncmp_name(name, "pwd")) {
-    char* const s = grab_value(setting, value, next);
-    if (!s) {
-      put_str_error(setting, RED, "%s: --%s missing value", setting->av[0], name);
-      return 1;
-    }
-    //error = fv_add_last(&setting->flagValue, 0, value);
+  else if (strncmp_name(name, "demo")) {
+    ft = &demo;
+    grabValue = equal;
   }
   else if (strncmp_name(name, "help")) {
-    put_str_error(setting, WHT, "%s: todo print help", setting->av[0]);
+    ft = &help;
   }
   else {
     put_str_error(setting, RED, "%s: --%s unknow flag, try --help", setting->av[0], name);
+    return 1;
   }
-  printf(">>%.*s\n", (int)nameLen, name);
-  printf(">>%s|%zu\n", value, strlen(value));
-  return 0;
+  v = grab_value(setting, value, grabValue);
+  const int e = ft ? ft(setting, v): 0;
+  if (v)
+    free(v);
+  return e;
 }
 
 
@@ -118,7 +124,7 @@ static int set_double_value(t_setting* setting) {
   while (s[len] && (s[len] != 0 && s[len] != '=')) {
     len++;
   }
-  return parsing_value_double(setting, s, len, s + len);
+  return parsing_value_double(setting, s, s + len);
 }
 
 int parsing_get_double(t_setting* setting) {

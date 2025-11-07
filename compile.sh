@@ -68,3 +68,8 @@ echo '|' $compileLine '|'
 $compileLine
 
 exit 0
+
+
+main() {
+  
+}
