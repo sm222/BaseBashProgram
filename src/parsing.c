@@ -68,34 +68,39 @@ enum {
   next  = 1
 };
 
+# define VAR_NAME_MAX_SIZE  NAME_MAX
+# define VALUE_MAX_SIZE     PATH_MAX
+
+
+char   value__[VALUE_MAX_SIZE];
+
+# include <string.h>
+
 static char* grab_value(t_setting* setting, const char* value, int type) {
-  char *dest = NULL;
-  if ((type == equal || type == none) && value[0]) {
-    dest = d__strdup(value);
-  } else if (type) {
-    if (setting->current + 1 >= setting->ac) {
-      return NULL;
+  bzero(&value__, VALUE_MAX_SIZE);
+  const char*  p = value;
+  if (type == next) {
+    if (setting->current + 1 > setting->ac) {
+      return value__;
+      p = setting->av[setting->current + 1];
     }
-    dest = d__strdup(setting->av[setting->current + 1]);
-  } else {
-    return NULL;
   }
-  if (!dest) {
-    perror("grab_value");
-  }
-  return dest;
+  const size_t len = strlen(p);
+  const size_t copylen = len < VALUE_MAX_SIZE ? len : VALUE_MAX_SIZE - 1;
+  memcpy(value__, p, copylen);
+  printf("|%s|\n", value__);
+  return value__;
 }
 
 
 # include <stdlib.h>
 # include "prossess.h"
 
+
 static int parsing_value_double(t_setting* setting, const char* name, const char* value) {
   int(*ft)(t_setting*, const char*) = NULL;
   int grabValue = none;
-  char* v = NULL;
   //
-  
   if (strncmp_name(name, "color")) {
     set_byte(&setting->flags, setting_color, true);
   }
@@ -110,10 +115,8 @@ static int parsing_value_double(t_setting* setting, const char* name, const char
     put_str_error(setting, RED, "%s: --%s unknow flag, try --help", setting->av[0], name);
     return 1;
   }
-  v = grab_value(setting, value, grabValue);
-  const int e = ft ? ft(setting, v): 0;
-  if (v)
-    free(v);
+  grab_value(setting, value, grabValue);
+  const int e = ft ? ft(setting, value__): 0;
   return e;
 }
 
