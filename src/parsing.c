@@ -1,6 +1,7 @@
-#include "dataType.h"
-#include "utilse.h"
-#include "flags.h"
+# include "dataType.h"
+# include "utilse.h"
+# include "flags.h"
+# include "prossess.h"
 
 const char* const flag_singile[] = {
   "c\tforce colors output",
@@ -25,7 +26,10 @@ static int set_single_value(t_setting* setting, int c) {
     set_byte(&setting->flags, setting_color, true);
   }
   else if (c == 'h') {
-    put_str_error(setting, RED, "todo: print help\n");
+    help(setting, "");
+  }
+  else if (c == 'D') {
+    add_demo(setting, "");
   }
   else {
     put_str_error(setting, RED, "%c: is unknow flag, call -h or --help to see the option\n", c);
@@ -35,6 +39,7 @@ static int set_single_value(t_setting* setting, int c) {
 }
 
 int parsing_get_single(t_setting* setting) {
+  setting->jump = 1;
   if (setting->current > setting->ac)
     return -1;
   if (setting->av[setting->current][0] == '-' && !setting->av[setting->current][1]) {
@@ -79,11 +84,14 @@ char   value__[VALUE_MAX_SIZE];
 static char* grab_value(t_setting* setting, const char* value, int type) {
   bzero(&value__, VALUE_MAX_SIZE);
   const char*  p = value;
+  if (!p)
+    return value__;
   if (type == next) {
-    if (setting->current + 1 > setting->ac) {
+    if (setting->current + 1 >= setting->ac) {
       return value__;
-      p = setting->av[setting->current + 1];
     }
+    p = setting->av[setting->current + 1];
+    setting->jump = 2; // skip one arg in av
   }
   const size_t len = strlen(p);
   const size_t copylen = len < VALUE_MAX_SIZE ? len : VALUE_MAX_SIZE - 1;
@@ -94,22 +102,23 @@ static char* grab_value(t_setting* setting, const char* value, int type) {
 
 
 # include <stdlib.h>
-# include "prossess.h"
 
 
 static int parsing_value_double(t_setting* setting, const char* name, const char* value) {
   int(*ft)(t_setting*, const char*) = NULL;
   int grabValue = none;
   //
-  if (strncmp_name(name, "color")) {
+  if (strncmp_name(name, "color"))
     set_byte(&setting->flags, setting_color, true);
-  }
   else if (strncmp_name(name, "demo")) {
     ft = &demo;
     grabValue = equal;
   }
-  else if (strncmp_name(name, "help")) {
+  else if (strncmp_name(name, "help"))
     ft = &help;
+  else if (strncmp_name(name, "add")) {
+    ft = &add_demo;
+    grabValue = next;
   }
   else {
     put_str_error(setting, RED, "%s: --%s unknow flag, try --help", setting->av[0], name);
@@ -131,6 +140,7 @@ static int set_double_value(t_setting* setting) {
 }
 
 int parsing_get_double(t_setting* setting) {
+  setting->jump = 1;
   if (setting->current > setting->ac)
     return -1;
   if (setting->av[setting->current][1] == '-' && !setting->av[setting->current][2]) {

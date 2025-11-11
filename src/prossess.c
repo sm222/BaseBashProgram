@@ -40,7 +40,7 @@ static int help_err(t_setting* setting, const char* data) {
 int  help(t_setting* setting, const char* data) {
   if (valid_end(data, none))
     return  help_err(setting, data);
-  printf(">>%s\n", data);
+  printf("todo: help\n");
   return 0;
 }
 
@@ -52,9 +52,9 @@ static int add_err(t_setting* setting, const char* data) {
   return 1;
 }
 
-int  add(t_setting* setting, const char* data) {
-  if (valid_end(data, none))
-    return  help_err(setting, data);
+int  add_demo(t_setting* setting, const char* data) {
+  if (valid_end(data, next))
+    return  add_err(setting, data);
   printf(">>%s\n", data);
   return 0;
 }

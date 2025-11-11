@@ -40,6 +40,7 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     .stdOut       = fdOut,       //
     .ac           = data.ac,     //
     .current      = 1,           // skip programe name
+    .jump         = 1,
     .av           = data.av,     //
     .programeName = data.av[0],  // program name
     .flags        = 0,           // flag
@@ -52,16 +53,17 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     return 1;
   # endif
   env_parsing(&programSetting);
-  for (; programSetting.current < programSetting.ac; programSetting.current++) {
+  for (; programSetting.current < programSetting.ac; programSetting.current += programSetting.jump) {
     if (strncmp(programSetting.av[programSetting.current], "--", 2) == 0) {
       status = parsing_get_double(&programSetting);
     }
     else if (programSetting.av[programSetting.current][0] == '-') {
       status = parsing_get_single(&programSetting);
+    } else {
+      // programe here (ex: add file)
     }
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
-    // programe here
     put_str_error(&programSetting, RED, "code %d", status);
   }
   // programe here
