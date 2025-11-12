@@ -21,6 +21,39 @@ int env_parsing(t_setting* setting) {
   return 0;
 }
 
+enum {
+  none = -1,
+  equal = 0,
+  next  = 1
+};
+
+# define VAR_NAME_MAX_SIZE  NAME_MAX
+# define VALUE_MAX_SIZE     PATH_MAX
+
+
+char   value__[VALUE_MAX_SIZE];
+
+# include <string.h>
+
+
+static char* grab_value(t_setting* setting, const char* value, int type) {
+  bzero(&value__, VALUE_MAX_SIZE);
+  const char*  p = value;
+  if (!p)
+    return value__;
+  if (type == next) {
+    if (setting->current + setting->jump >= setting->ac) {
+      return value__;
+    }
+    p = setting->av[setting->current + setting->jump];
+    setting->jump += 1; // skip one arg in av
+  }
+  const size_t len = strlen(p);
+  const size_t copylen = len < VALUE_MAX_SIZE ? len : VALUE_MAX_SIZE - 1;
+  memcpy(value__, p, copylen);
+  return value__;
+}
+
 static int set_single_value(t_setting* setting, int c) {
   if (c == 'c') {
     set_byte(&setting->flags, setting_color, true);
@@ -29,7 +62,8 @@ static int set_single_value(t_setting* setting, int c) {
     help(setting, "");
   }
   else if (c == 'D') {
-    add_demo(setting, "");
+    const char* v = grab_value(setting, "", next);
+    add_demo(setting, v);
   }
   else {
     put_str_error(setting, RED, "%c: is unknow flag, call -h or --help to see the option\n", c);
@@ -67,38 +101,8 @@ static bool strncmp_name(const char* s1, const char* s2) {
   return 0;
 }
 
-enum {
-  none = -1,
-  equal = 0,
-  next  = 1
-};
-
-# define VAR_NAME_MAX_SIZE  NAME_MAX
-# define VALUE_MAX_SIZE     PATH_MAX
 
 
-char   value__[VALUE_MAX_SIZE];
-
-# include <string.h>
-
-static char* grab_value(t_setting* setting, const char* value, int type) {
-  bzero(&value__, VALUE_MAX_SIZE);
-  const char*  p = value;
-  if (!p)
-    return value__;
-  if (type == next) {
-    if (setting->current + 1 >= setting->ac) {
-      return value__;
-    }
-    p = setting->av[setting->current + 1];
-    setting->jump = 2; // skip one arg in av
-  }
-  const size_t len = strlen(p);
-  const size_t copylen = len < VALUE_MAX_SIZE ? len : VALUE_MAX_SIZE - 1;
-  memcpy(value__, p, copylen);
-  printf("|%s|\n", value__);
-  return value__;
-}
 
 
 # include <stdlib.h>

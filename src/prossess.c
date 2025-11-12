@@ -47,7 +47,7 @@ int  help(t_setting* setting, const char* data) {
 
 static int add_err(t_setting* setting, const char* data) {
   (void)data;
-  put_str_error(setting, RED, "%s: help take no value", setting->av[0]);
+  put_str_error(setting, RED, "%s: add take value", setting->av[0]);
   put_str_error(setting, RED, "ex: --help");
   return 1;
 }
@@ -55,6 +55,6 @@ static int add_err(t_setting* setting, const char* data) {
 int  add_demo(t_setting* setting, const char* data) {
   if (valid_end(data, next))
     return  add_err(setting, data);
-  printf(">>%s\n", data);
+  printf("add -> %s\n", data);
   return 0;
 }
