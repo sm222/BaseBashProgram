@@ -45,7 +45,9 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     .programeName = data.av[0],  // program name
     .flags        = 0,           // flag
     .env          = data.env,    //
-    .flagValue    = NULL         //*
+    .flagValue    = NULL,        //
+    .avFt         = NULL,        //
+    .programFt    = NULL,        //*
   };
   //
   # ifdef NAME_CHECK
@@ -60,12 +62,16 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     else if (programSetting.av[programSetting.current][0] == '-') {
       status = parsing_get_single(&programSetting);
     } else {
+      if (programSetting.avFt)
+        status = programSetting.avFt(&programSetting, programSetting.av[programSetting.current]);
       // programe here (ex: add file)
     }
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
     put_str_error(&programSetting, RED, "code %d", status);
   }
+  if (programSetting.programFt)
+    status = programSetting.programFt(&programSetting);
   // programe here
   return status;
 }
