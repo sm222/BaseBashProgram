@@ -61,9 +61,9 @@ static int set_single_value(t_setting* setting, int c) {
   else if (c == 'h') {
     help(setting, "");
   }
-  else if (c == 'D') {
+  else if (c == 'B') {
     const char* v = grab_value(setting, "", next);
-    add_demo(setting, v);
+    barr(setting, v);
   }
   else {
     put_str_error(setting, RED, "%c: is unknow flag, call -h or --help to see the option\n", c);
@@ -114,14 +114,14 @@ static int parsing_value_double(t_setting* setting, const char* name, const char
   //
   if (strncmp_name(name, "color"))
     set_byte(&setting->flags, setting_color, true);
-  else if (strncmp_name(name, "demo")) {
-    ft = &demo;
+  else if (strncmp_name(name, "foo")) {
+    ft = &foo;
     grabValue = equal;
   }
   else if (strncmp_name(name, "help"))
     ft = &help;
-  else if (strncmp_name(name, "add")) {
-    ft = &add_demo;
+  else if (strncmp_name(name, "barr")) {
+    ft = &barr;
     grabValue = next;
   }
   else {

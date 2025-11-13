@@ -17,15 +17,15 @@ static bool valid_end(const char* s, int t) {
   return false;
 }
 
-static int demo_err(t_setting* setting, const char* data) {
-  put_str_error(setting, RED, "%s: demo%s missing value", setting->av[0], data ? data : "");
-  put_str_error(setting, RED, "ex: --demo=value");
+static int foo_err(t_setting* setting, const char* data) {
+  put_str_error(setting, RED, "%s: foo%s missing value", setting->av[0], data ? data : "");
+  put_str_error(setting, RED, "ex: --foo=value");
   return 1;
 }
 
-int demo(t_setting* setting, const char* data) {
+int foo(t_setting* setting, const char* data) {
   if (valid_end(data, equal))
-    return demo_err(setting, data);
+    return foo_err(setting, data);
   printf("hi %s\n", data);
   return 0;
 }
@@ -45,16 +45,16 @@ int  help(t_setting* setting, const char* data) {
 }
 
 
-static int add_err(t_setting* setting, const char* data) {
+static int barr_err(t_setting* setting, const char* data) {
   (void)data;
   put_str_error(setting, RED, "%s: add take value", setting->av[0]);
   put_str_error(setting, RED, "ex: --help");
   return 1;
 }
 
-int  add_demo(t_setting* setting, const char* data) {
+int  barr(t_setting* setting, const char* data) {
   if (valid_end(data, next))
-    return  add_err(setting, data);
+    return  barr_err(setting, data);
   printf("add -> %s\n", data);
   return 0;
 }
