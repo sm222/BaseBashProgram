@@ -32,6 +32,7 @@ static bool test_name(const char* name) {
 }
 # endif
 
+int setStart(void*);
 
 static int base(t_mainData data, int fdIn, int fdOut) {
   int status = EX_OK;
@@ -52,6 +53,10 @@ static int base(t_mainData data, int fdIn, int fdOut) {
   //
   # ifdef NAME_CHECK
   if (!test_name(data.av[0]))
+    return 1;
+  # endif
+  # ifdef SETUP_EXTERN
+  if (setStart(&programSetting))
     return 1;
   # endif
   env_parsing(&programSetting);
