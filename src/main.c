@@ -41,14 +41,16 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     .stdOut       = fdOut,       //
     .ac           = data.ac,     //
     .current      = 1,           // skip programe name
-    .jump         = 1,
+    .jump         = 1,           //
     .av           = data.av,     //
     .programeName = data.av[0],  // program name
     .flags        = 0,           // flag
     .env          = data.env,    //
     .flagValue    = NULL,        //
     .avFt         = NULL,        //
-    .programFt    = NULL,        //*
+    .programFt    = NULL,        //
+    .ftsingle     = NULL,        //
+    .ftdouble     = NULL,        //*
   };
   //
   # ifdef NAME_CHECK
@@ -62,22 +64,32 @@ static int base(t_mainData data, int fdIn, int fdOut) {
   env_parsing(&programSetting);
   for (; programSetting.current < programSetting.ac; programSetting.current += programSetting.jump) {
     if (strncmp(programSetting.av[programSetting.current], "--", 2) == 0) {
-      status = parsing_get_double(&programSetting);
+      if (programSetting.ftdouble) {
+        status = programSetting.ftdouble(&programSetting);
+      } else {
+        status = parsing_get_double(&programSetting);
+      }
     }
     else if (programSetting.av[programSetting.current][0] == '-') {
-      status = parsing_get_single(&programSetting);
+      if (programSetting.ftsingle) {
+        status = programSetting.ftsingle(&programSetting);
+      } else {
+        status = parsing_get_single(&programSetting);
+      }
     } else {
-      if (programSetting.avFt)
+      if (programSetting.avFt) {
         status = programSetting.avFt(&programSetting, programSetting.av[programSetting.current]);
-      // programe here (ex: add file)
+      } else {
+        printf("output > %s\n", programSetting.av[programSetting.current]);
+      }
     }
     if (read_byte(programSetting.flags, setting_continue_on_error) && status)
       return status;
     put_str_error(&programSetting, RED, "code %d", status);
   }
+  // programe here
   if (programSetting.programFt)
     status = programSetting.programFt(&programSetting);
-  // programe here
   return status;
 }
 

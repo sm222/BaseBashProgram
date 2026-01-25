@@ -70,6 +70,8 @@ typedef struct mainData {
 # include "flags.h"
 
 typedef  int (*avProsses)(void* , const char*);
+typedef  int (*avSingle)(void*);
+typedef  int (*avDouble)(void*);
 
 typedef  int (*program)(void*);
 
@@ -86,6 +88,8 @@ typedef struct setting {
   t_flagValue*       flagValue;
   avProsses          avFt;
   program            programFt;
+  avSingle           ftsingle;
+  avDouble           ftdouble;
 } t_setting;
 
 
