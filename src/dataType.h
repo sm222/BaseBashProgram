@@ -12,6 +12,8 @@
 //# include <ncurses.h>
 # include <stdbool.h>
 # include <sys/param.h>
+# include "argv.h"
+
 
 // https://stackoverflow.com/questions/142508/how-do-i-check-os-with-a-preprocessor-directive
 
@@ -83,6 +85,7 @@ typedef struct setting {
   int                jump;
   const char* const* av;
   const char*        programeName;
+  t_avData           avNoFlags;
   int32_t            flags;
   const char* const* env;
   t_flagValue*       flagValue;

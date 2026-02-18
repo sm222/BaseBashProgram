@@ -2,8 +2,6 @@
 #include "dataType.h"
 #include "utilse.h"
 #include "parsing.h"
-#include "flags.h"
-
 
 # ifdef NAME_CHECK
 static bool test_name(const char* name) {
@@ -62,7 +60,10 @@ static int base(t_mainData data, int fdIn, int fdOut) {
     return 1;
   # endif
   env_parsing(&programSetting);
-  for (; programSetting.current < programSetting.ac; programSetting.current += programSetting.jump) {
+  av_setup(&programSetting.avNoFlags, programSetting.ac);
+  bool error = false;
+  for (; programSetting.current < programSetting.ac; \
+  programSetting.current += programSetting.jump) {
     if (strncmp(programSetting.av[programSetting.current], "--", 2) == 0) {
       if (programSetting.ftdouble) {
         status = programSetting.ftdouble(&programSetting);
@@ -80,16 +81,18 @@ static int base(t_mainData data, int fdIn, int fdOut) {
       if (programSetting.avFt) {
         status = programSetting.avFt(&programSetting, programSetting.av[programSetting.current]);
       } else {
-        printf("output > %s\n", programSetting.av[programSetting.current]);
+        av_add(&programSetting.avNoFlags, programSetting.av[programSetting.current]);
       }
     }
-    if (read_byte(programSetting.flags, setting_continue_on_error) && status)
-      return status;
-    put_str_error(&programSetting, RED, "code %d", status);
+    error = read_byte(programSetting.flags, setting_continue_on_error);
+    if (error && status)
+      programSetting.current = programSetting.ac;
+    put_str_error(&programSetting, RED, "code %d", status);// debug only
   }
   // programe here
-  if (programSetting.programFt)
+  if (programSetting.programFt && !(error && status))
     status = programSetting.programFt(&programSetting);
+  av_free(&programSetting.avNoFlags);
   return status;
 }
 
