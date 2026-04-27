@@ -1,0 +1,4 @@
+NAME:base
+NAMEX:
+
+CFLAGS: -Wall -Werror -Wextra -D NAME_CHECK

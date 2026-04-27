@@ -1,5 +1,5 @@
 # include "flags.h"
-# include "utilse.h"
+# include "utils.h"
 # include <string.h>
 # include <strings.h>
 # include <stdlib.h>
@@ -58,7 +58,6 @@ int fv_set_name(t_flagValue* node, const char* name) {
   return 0;
 }
 
-# include <stdio.h>
 void fv_print(t_flagValue* list) {
   for ( ; list; list = list->next) {
     printf("[%d]%s\n", list->flag, list->value);
